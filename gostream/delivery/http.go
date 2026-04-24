@@ -29,10 +29,11 @@ type Options struct {
 	CacheSize            int64
 }
 
-func NewEngine(p core.Provider, s core.Storage, opts Options) *Engine {
+func NewEngine(p core.Provider, s core.Storage, c core.Cache, opts Options) *Engine {
 	return &Engine{
 		provider:  p,
 		storage:   s,
+		cache:     c,
 		maxConns:  opts.MaxConcurrentRequests,
 		semaphore: make(chan struct{}, opts.MaxConcurrentRequests),
 		bufferPool: &sync.Pool{
@@ -85,7 +86,16 @@ func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Segment index missing", http.StatusBadRequest)
 		}
 	default:
-		// Default to info or raw stream
+		// Dynamic decision: if HLS exists, we might want to tell the client
+		// but since this is a GET request, we'll serve the raw stream
+		// unless we want to redirect. Let's check for HLS presence.
+		playlistPath := fmt.Sprintf("hls/%s/playlist.m3u8", id)
+		if exists, _ := e.storage.Exists(r.Context(), playlistPath); exists {
+			// If it's a browser-like request or common player, maybe redirect?
+			// For now, let's just serve the raw stream as requested or provide a header.
+			w.Header().Set("X-HLS-Available", "true")
+			w.Header().Set("X-HLS-Playlist", fmt.Sprintf("/media/%s/playlist.m3u8", id))
+		}
 		e.handleProgressive(w, r, stream)
 	}
 }

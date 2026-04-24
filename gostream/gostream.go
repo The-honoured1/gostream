@@ -36,12 +36,13 @@ func New() *Server {
 	}
 
 	// Default engine with 1000 concurrent request limit
-	srv.engine = delivery.NewEngine(srv, s, delivery.Options{
+	srv.engine = delivery.NewEngine(srv, s, c, delivery.Options{
 		MaxConcurrentRequests: 1000,
 		CacheSize:            100 * 1024 * 1024,
 	})
-	// Actually we need to pass the cache to the engine
-	// Let's fix NewEngine to take Cache too.
+
+	return srv
+}
 
 // Register adds a file-based media source to the engine.
 func (s *Server) Register(id, path string) {
