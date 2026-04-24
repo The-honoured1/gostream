@@ -54,7 +54,7 @@ func (s *Server) Register(id, path string) {
 	s.logger.Printf("Registered stream '%s' from %s", id, path)
 }
 
-// RegisterMemory adds a memory-based media source.
+// RegisterMemory adds a memory-based media source to the engine.
 func (s *Server) RegisterMemory(id string, data []byte) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -64,12 +64,25 @@ func (s *Server) RegisterMemory(id string, data []byte) {
 	s.logger.Printf("Registered memory stream '%s' (%d bytes)", id, len(data))
 }
 
+// AddStream adds a custom MediaStream implementation manually.
+func (s *Server) AddStream(id string, stream core.MediaStream) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.streams[id] = stream
+	s.logger.Printf("Registered custom stream '%s'", id)
+}
+
 // Get implements core.Provider interface.
 func (s *Server) Get(id string) (core.MediaStream, bool) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	m, ok := s.streams[id]
 	return m, ok
+}
+
+// GetEngine returns the underlying delivery engine (primarily for testing).
+func (s *Server) GetEngine() *delivery.Engine {
+	return s.engine
 }
 
 // Start launches the streaming engine.
