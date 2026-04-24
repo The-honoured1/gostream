@@ -76,7 +76,7 @@ func NewMemoryStream(name string, data []byte) *MemoryStream {
 }
 
 func (m *MemoryStream) Open(ctx context.Context) (io.ReadSeekCloser, error) {
-	return &nopSeekCloser{io.NewSectionReader(dummyReader(m.data), 0, int64(len(m.data)))}, nil
+	return &nopSeekCloser{io.NewSectionReader(memoryReader(m.data), 0, int64(len(m.data)))}, nil
 }
 
 func (m *MemoryStream) Stat(ctx context.Context) (core.FileInfo, error) {
@@ -96,12 +96,12 @@ func (m *MemoryStream) ContentType() string {
 }
 
 // Helpers for MemoryStream
-type dummyReader []byte
-func (d dummyReader) ReadAt(p []byte, off int64) (int, error) {
-	if off >= int64(len(d)) {
+type memoryReader []byte
+func (m memoryReader) ReadAt(p []byte, off int64) (int, error) {
+	if off >= int64(len(m)) {
 		return 0, io.EOF
 	}
-	n := copy(p, d[off:])
+	n := copy(p, m[off:])
 	if n < len(p) {
 		return n, io.EOF
 	}

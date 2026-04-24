@@ -4,8 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
-	"os/exec"
+	"net/http"
 
 	"github.com/The-honoured1/gostream"
 	"github.com/The-honoured1/gostream/pkg/hls"
@@ -13,36 +12,30 @@ import (
 )
 
 func main() {
-	// 1. Prepare sample files
-	prepareDummyFiles()
+	// 1. Initialize Gostream
+	engine := gostream.New()
 
-	// 2. Initialize Gostream
-	server := gostream.New()
+	// 2. Register media sources (assuming these files exist)
+	engine.Register("song", "media/sample.mp3")
+	engine.Register("movie", "media/sample.mp4")
 
-	// 3. Register different media types
-	server.Register("song", "media/sample.mp3")
-	server.Register("movie", "media/sample.mp4")
-	server.Register("archive", "media/sample.zip")
+	// 3. Optional: Trigger HLS processing for video
+	setupHLS(engine, "movie", "media/sample.mp4")
 
-	// 4. Setup HLS for the movie (optional module)
-	setupHLS(server, "movie", "media/sample.mp4")
+	// 4. Start the HTTP server (User-controlled)
+	fmt.Println("🚀 Gostream engine ready. Serving on :8080")
+	fmt.Println("🎵 Audio: http://localhost:8080/media/song/stream")
+	fmt.Println("🎥 Video: http://localhost:8080/media/movie/stream")
 
-	// 5. Start the engine
-	fmt.Println("==================================================")
-	fmt.Println("🚀 Gostream Advanced Engine")
-	fmt.Println("==================================================")
-	fmt.Println("🎵 Audio (Progressive): http://localhost:8080/media/song/stream")
-	fmt.Println("🎥 Video (Progressive): http://localhost:8080/media/movie/stream")
-	fmt.Println("📦 Archive (Binary):    http://localhost:8080/media/archive/stream")
-	fmt.Println("📺 Video (HLS):         http://localhost:8080/media/movie/playlist.m3u8")
-	fmt.Println("==================================================")
+	server := &http.Server{
+		Addr:    ":8080",
+		Handler: engine.Handler(),
+	}
 
-	log.Fatal(server.Start(":8080"))
+	log.Fatal(server.ListenAndServe())
 }
 
 func setupHLS(s *gostream.Server, id, path string) {
-	// In a real system, this would be integrated into the server.Register process
-	// but here we show the modularity.
 	st, _ := storage.NewLocalStorage("data")
 	m, err := hls.NewManager(st)
 	if err != nil {
@@ -54,27 +47,6 @@ func setupHLS(s *gostream.Server, id, path string) {
 	go func() {
 		if err := m.ProcessStream(context.Background(), id, stream); err != nil {
 			log.Printf("❌ HLS processing failed for %s: %v", id, err)
-		} else {
-			log.Printf("✅ HLS processing completed for %s", id)
 		}
 	}()
-}
-
-func prepareDummyFiles() {
-	os.MkdirAll("media", 0755)
-	
-	// Create a dummy MP3
-	os.WriteFile("media/sample.mp3", make([]byte, 1024*1024), 0644)
-	
-	// Create a dummy ZIP
-	os.WriteFile("media/sample.zip", make([]byte, 5*1024*1024), 0644)
-
-	// Create a dummy MP4 (if ffmpeg is available)
-	if _, err := exec.LookPath("ffmpeg"); err == nil {
-		fmt.Println("Generating sample MP4...")
-		exec.Command("ffmpeg", "-f", "lavfi", "-i", "testsrc=duration=10:size=640x360:rate=30", "-c:v", "libx264", "media/sample.mp4").Run()
-	} else {
-		fmt.Println("ffmpeg not found, creating empty sample.mp4")
-		os.WriteFile("media/sample.mp4", make([]byte, 2*1024*1024), 0644)
-	}
 }
