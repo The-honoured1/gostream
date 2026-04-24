@@ -618,7 +618,3 @@ When a user requests `streamcloud.com/v/123`:
 Gostream is more than just a library; it's a foundation for the next generation of media applications. By focusing on performance, abstraction, and the Go ecosystem, it provides a powerful toolkit for any developer looking to master the art of streaming.
 
 We are excited to see what you build! Let us know about your projects on the GitHub Discussions page.
-
----
-*(End of Documentation)*
-*(Total Word Count: ~3,200 | Total Line Estimate: 1,020)*
