@@ -126,12 +126,15 @@ func (e *Engine) handleHLSSegment(w http.ResponseWriter, r *http.Request, id, se
 func (e *Engine) serveFromStorage(w http.ResponseWriter, r *http.Request, path, contentType string) {
 	ctx := r.Context()
 	
-	// Try cache first (logical implementation)
-	// if data, hit := e.cache.Get(path); hit {
-	// 	w.Header().Set("Content-Type", contentType)
-	// 	w.Write(data)
-	// 	return
-	// }
+	// Cache lookup
+	if e.cache != nil {
+		if data, hit := e.cache.Get(path); hit {
+			w.Header().Set("Content-Type", contentType)
+			w.Header().Set("X-Cache", "HIT")
+			w.Write(data)
+			return
+		}
+	}
 
 	exists, _ := e.storage.Exists(ctx, path)
 	if !exists {
@@ -148,10 +151,21 @@ func (e *Engine) serveFromStorage(w http.ResponseWriter, r *http.Request, path, 
 
 	w.Header().Set("Content-Type", contentType)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("X-Cache", "MISS")
 
 	// Use pool for memory-efficient transfer
 	buf := e.bufferPool.Get().([]byte)
 	defer e.bufferPool.Put(buf)
+
+	// In a production engine, we would also populate the cache here if the file is small (e.g. segments)
+	if strings.HasSuffix(path, ".m3u8") || strings.HasSuffix(path, ".ts") {
+		data, _ := io.ReadAll(file)
+		if e.cache != nil {
+			e.cache.Set(path, data)
+		}
+		w.Write(data)
+		return
+	}
 
 	io.CopyBuffer(w, file, buf)
 }

@@ -21,6 +21,10 @@ func NewFileStream(path string) *FileStream {
 	}
 }
 
+func (f *FileStream) GetPath() string {
+	return f.path
+}
+
 func (f *FileStream) Open(ctx context.Context) (io.ReadSeekCloser, error) {
 	return os.Open(f.path)
 }

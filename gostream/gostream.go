@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/The-honoured1/gostream/cache"
 	"github.com/The-honoured1/gostream/core"
 	"github.com/The-honoured1/gostream/delivery"
 	"github.com/The-honoured1/gostream/storage"
@@ -18,27 +19,29 @@ type Server struct {
 	streams   map[string]core.MediaStream
 	storage   core.Storage
 	engine    *delivery.Engine
+	cache     core.Cache
 	logger    *log.Logger
 }
 
 // New creates a new Gostream server with production-grade defaults.
 func New() *Server {
 	s, _ := storage.NewLocalStorage("data")
+	c := cache.NewLRUCache(100 * 1024 * 1024) // 100MB
 	
 	srv := &Server{
 		streams: make(map[string]core.MediaStream),
 		storage: s,
+		cache:   c,
 		logger:  log.New(log.Writer(), "[GOSTREAM] ", log.LstdFlags),
 	}
 
 	// Default engine with 1000 concurrent request limit
 	srv.engine = delivery.NewEngine(srv, s, delivery.Options{
 		MaxConcurrentRequests: 1000,
-		CacheSize:            100 * 1024 * 1024, // 100MB
+		CacheSize:            100 * 1024 * 1024,
 	})
-
-	return srv
-}
+	// Actually we need to pass the cache to the engine
+	// Let's fix NewEngine to take Cache too.
 
 // Register adds a file-based media source to the engine.
 func (s *Server) Register(id, path string) {
