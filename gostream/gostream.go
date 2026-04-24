@@ -6,11 +6,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/The-honoured1/gostream/cache"
 	"github.com/The-honoured1/gostream/core"
-	"github.com/The-honoured1/gostream/delivery"
-	"github.com/The-honoured1/gostream/storage"
-	"github.com/The-honoured1/gostream/stream"
+	"github.com/The-honoured1/gostream/internal/cache"
+	"github.com/The-honoured1/gostream/pkg/delivery"
+	"github.com/The-honoured1/gostream/pkg/storage"
+	"github.com/The-honoured1/gostream/pkg/stream"
 )
 
 // Server is the high-level manager for the streaming engine.

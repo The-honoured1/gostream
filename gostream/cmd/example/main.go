@@ -8,8 +8,8 @@ import (
 	"os/exec"
 
 	"github.com/The-honoured1/gostream"
-	"github.com/The-honoured1/gostream/hls"
-	"github.com/The-honoured1/gostream/storage"
+	"github.com/The-honoured1/gostream/pkg/hls"
+	"github.com/The-honoured1/gostream/pkg/storage"
 )
 
 func main() {
