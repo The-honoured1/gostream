@@ -1,11 +1,10 @@
 package handler
 
 import (
-	"context"
 	"io"
 	"net/http"
-	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/The-honoured1/gostream/storage"
 )
@@ -44,7 +43,7 @@ func StreamHandler(s storage.Storage) http.HandlerFunc {
 
 		// http.ServeContent handles Range requests automatically!
 		// It requires a ReadSeeker, which our storage.Open returns.
-		http.ServeContent(w, r, info.Name,  /* lastModified time could be added here if storage.Stat provided it */  nil, file)
+		http.ServeContent(w, r, info.Name, time.Time{}, file)
 	}
 }
 
