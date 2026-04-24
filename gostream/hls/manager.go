@@ -32,15 +32,6 @@ func NewManager(s core.Storage) (*Manager, error) {
 
 // ProcessStream converts a MediaStream into HLS segments if possible.
 func (m *Manager) ProcessStream(ctx context.Context, id string, s core.MediaStream) error {
-	stat, err := s.Stat(ctx)
-	if err != nil {
-		return err
-	}
-
-	// We currently only support file-based HLS since ffmpeg needs a source path or stream
-	// For this engine, we'll assume we can get a path if it's a FileStream
-	// A more advanced engine would pipe the body to ffmpeg's stdin
-	
 	// Check if already processed
 	playlistPath := fmt.Sprintf("hls/%s/playlist.m3u8", id)
 	if exists, _ := m.storage.Exists(ctx, playlistPath); exists {
@@ -66,7 +57,7 @@ func (m *Manager) ProcessStream(ctx context.Context, id string, s core.MediaStre
 	}
 
 	m.logger.Printf("Starting HLS segmentation for %s...", id)
-	
+
 	// ffmpeg command
 	cmd := exec.CommandContext(ctx, m.ffmpeg,
 		"-i", sourcePath,

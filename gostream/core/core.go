@@ -39,6 +39,5 @@ type Cache interface {
 
 // Provider resolves a unique ID into a MediaStream.
 type Provider interface {
-	Register(id string, stream MediaStream)
 	Get(id string) (MediaStream, bool)
 }
