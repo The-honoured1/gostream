@@ -12,7 +12,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/The-honoured1/gostream/handler"
 	"github.com/The-honoured1/gostream/internal/cache"
 	"github.com/The-honoured1/gostream/segmenter"
 	"github.com/The-honoured1/gostream/storage"
