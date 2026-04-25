@@ -5,10 +5,7 @@
   <p><b>A production-grade, low-latency, high-concurrency media delivery framework for Go.</b></p>
 
   [![Go Reference](https://pkg.go.dev/badge/github.com/The-honoured1/gostream.svg)](https://pkg.go.dev/github.com/The-honoured1/gostream)
-  [![Go Report Card](https://goreportcard.com/badge/github.com/The-honoured1/gostream)](https://goreportcard.com/report/github.com/The-honoured1/gostream)
   [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-  [![Build Status](https://github.com/The-honoured1/gostream/workflows/Go/badge.svg)](https://github.com/The-honoured1/gostream/actions)
-  [![Release](https://img.shields.io/github/v/release/The-honoured1/gostream)](https://github.com/The-honoured1/gostream/releases)
 </div>
 
 ---
