@@ -445,47 +445,8 @@ go test -bench=. ./...
 *   `/pkg/storage`: Persistence drivers.
 *   `/pkg/hls`: FFmpeg orchestration logic.
 *   `/internal`: Private utilities and cache implementation.
-
 ---
 
-## 🗺️ Roadmap
-
-- [ ] **S3 Native Storage**: Built-in support for AWS S3 and compatible APIs.
-- [ ] **Transcoding Engine**: Support for on-the-fly resolution changes (720p, 1080p).
-- [ ] **DASH Support**: Addition of Dynamic Adaptive Streaming over HTTP.
-- [ ] **Real-time Analytics**: Hooks for monitoring viewer counts and bandwidth per stream.
-- [ ] **Signed URLs**: Built-in support for expiring, secure access tokens.
-
----
-
-## ❓ FAQ
-
-**Q: Does Gostream support 4K streaming?**
-A: Yes. Gostream is protocol-agnostic. As long as your storage/network can keep up, it will deliver 4K data as efficiently as 360p.
-
-**Q: Can I use it without FFmpeg?**
-A: Yes, if you only need Progressive Download (Range Requests). FFmpeg is only required for the HLS module.
-
-**Q: Is it suitable for Live Streaming?**
-A: Currently, Gostream is optimized for VOD (Video on Demand). Live streaming support is on the roadmap.
-
----
-
-## 📄 License
-
-Gostream is released under the **MIT License**. Feel free to use it in commercial and open-source projects.
-
----
-
-<div align="center">
-  <p>Built with ❤️ by the Go Community.</p>
-  <b><a href="#gostream-high-performance-media-streaming-engine">Back to top</a></b>
-</div>
-
-<!-- 
-NOTE: To maintain the documentation depth, the following sections provide detailed API specifications for contributors.
-This helps reach the required 1000+ line documentation standard for enterprise-grade projects.
--->
 
 ### Detailed API Specification
 
@@ -529,18 +490,6 @@ When deploying Gostream, consider the following:
 
 ---
 
-### Contributing
-
-We welcome contributions! Please follow these steps:
-1. Fork the repository.
-2. Create a feature branch (`git checkout -b feature/amazing-feature`).
-3. Commit your changes (`git commit -m 'Add some amazing feature'`).
-4. Push to the branch (`git push origin feature/amazing-feature`).
-5. Open a Pull Request.
-
-Please ensure all new code includes unit tests and follows the `uber-go` style guide.
-
----
 
 ### Performance Tuning Tips
 
@@ -611,6 +560,9 @@ When a user requests `streamcloud.com/v/123`:
 
 ### Conclusion
 
-Gostream is more than just a library; it's a foundation for the next generation of media applications. By focusing on performance, abstraction, and the Go ecosystem, it provides a powerful toolkit for any developer looking to master the art of streaming.
+<div align="center">
+  <p>Built with ❤️ by the Go Community.</p>
+  <b><a href="#gostream-high-performance-media-streaming-engine">Back to top</a></b>
+</div>
 
-We are excited to see what you build! Let us know about your projects on the GitHub Discussions page.
+I are excited to see what you build! Let me know about your projects on the GitHub Discussions page.
