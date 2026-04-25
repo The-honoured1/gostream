@@ -1,7 +1,6 @@
 # Gostream: High-Performance Media Streaming Engine
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/The-honoured1/gostream/main/assets/banner.png" alt="Gostream Banner" width="800">
   <br>
   <p><b>A production-grade, low-latency, high-concurrency media delivery framework for Go.</b></p>
 
